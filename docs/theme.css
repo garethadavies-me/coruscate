@@ -29,21 +29,21 @@
   --font-title-weight: 700;
 
   --font-subtitle-size: 20px;
-  --font-subtitle-weight: 400;
+  --font-subtitle-weight: 600;
 
-  --font-section-title-size: 16px;
+  --font-section-title-size: 22px;
   --font-section-title-weight: 600;
 
-  --font-label-size: 16px;
+  --font-label-size: 18px;
   --font-label-weight: 600;
 
-  --font-body-size: 16px;
+  --font-body-size: 18px;
   --font-body-weight: 400;
 
-  --font-body-large-size: 18px;
+  --font-body-large-size: 22px;
   --font-body-large-weight: 400;
 
-  --font-caption-size: 14px;
+  --font-caption-size: 16px;
   --font-caption-weight: 400;
 }
 
@@ -66,16 +66,15 @@ body {
   font-weight: var(--font-body-weight);
   color: var(--color-text);
   background-color: var(--color-background);
-  display: flex;
-  justify-content: center;
-  padding: var(--space-lg);
+  padding: var(--space-xl);
 }
 
 .page-shell {
   width: 100%;
   max-width: 840px;
+  margin: 0 auto;
   color: var(--color-text);
-  position: relative;
+  padding: 0 0 var(--space-xl) 0;
 }
 
 .page-header {
@@ -92,40 +91,21 @@ body {
 .page-subtitle {
   font-size: var(--font-subtitle-size);
   font-weight: var(--font-subtitle-weight);
-  color: var(--color-text-muted);
-}
-
-.lead {
-  font-size: var(--font-body-large-size);
-  font-weight: var(--font-body-large-weight);
   color: var(--color-text);
-  line-height: 1.6;
-}
-
-.muted {
-  font-size: var(--font-body-size);
-  color: var(--color-text-muted);
-  line-height: 1.6;
 }
 
 .section-title {
   font-size: var(--font-section-title-size);
   font-weight: var(--font-section-title-weight);
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--color-inactive);
-  margin-top: var(--space-xl);
+  margin-top: var(--space-xxl);
   margin-bottom: var(--space-sm);
 }
 
-.content-list {
-  padding-left: 1.25rem;
-  margin: var(--space-sm) 0 0;
-  color: var(--color-text-muted);
-}
-
-.content-list li + li {
-  margin-top: 4px;
+.sub-section-title {
+  font-size: var(--font-subtitle-size);
+  font-weight: var(--font-subtitle-weight);
+  margin-top: var(--space-xxl);
+  margin-bottom: var(--space-sm);
 }
 
 a {
