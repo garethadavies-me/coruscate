@@ -69,6 +69,19 @@ body {
   padding: var(--space-xl);
 }
 
+.button {
+  display: inline-block;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  text-decoration: none;
+  font-size: var(--font-body-size);
+  font-weight: var(--font-body-weight);
+  text-align: center;
+  cursor: pointer;
+}
+
 .page-shell {
   width: 100%;
   max-width: 840px;
@@ -116,3 +129,7 @@ a:hover {
   text-decoration: underline;
 }
 
+/* Hide elements by default */
+#token-found, #token-not-found {
+  display: none;
+}

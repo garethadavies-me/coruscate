@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Coruscate Studio">
+  <title>TeamPickr - Verify your email</title>
+  <link rel="stylesheet" href="../theme.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="page-header">
+      <h1 class="page-title">Verify your email</h1>
+    </header>
+    <main class="page-main">
+      <main class="page-main">
+        <div id="token-found">
+          <p>We’re opening TeamPickr to complete your verification...</p>
+          <p><a id="open-app-link" href="#">Open TeamPickr</a>.</p>
+        </div>
+  
+        <div id="token-not-found">
+          <p>Invalid link. Missing verification token.</p>
+          <p><a href="teampickr://">Open TeamPickr</a>.</p>
+        </div>
+  
+        <noscript>
+          <p>JavaScript is required to continue. Please return to the TeamPickr app.</p>
+        </noscript>
+      </main>
+    </main>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+
+    const tokenFoundEl = document.getElementById('token-found');
+    const tokenNotFoundEl = document.getElementById('token-not-found');
+    const openAppLinkEl = document.getElementById('open-app-link');
+
+    if (!token) {
+      tokenNotFoundEl.style.display = 'block';
+    } else {
+      const deepLink = `teampickr://verify-email?token=${encodeURIComponent(token)}`;
+
+      openAppLinkEl.href = deepLink;
+      tokenFoundEl.style.display = 'block';
+
+      setTimeout(() => {
+        window.location.href = deepLink;
+      }, 500);
+    }
+  </script>
+</body>
+</html>
