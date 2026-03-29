@@ -3,54 +3,117 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Coruscate Studio">
+  <meta name="description" content="TeamPickr email verification">
   <title>TeamPickr - Verify your email</title>
   <link rel="stylesheet" href="../theme.css">
+
+  <style>
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .page-main {
+      max-width: 40rem;
+      margin: 0 auto;
+    }
+
+    .action-link {
+      display: inline-block;
+    }
+
+    .helper-text {
+      opacity: 0.85;
+    }
+  </style>
 </head>
 <body>
   <div class="page-shell">
     <header class="page-header">
       <h1 class="page-title">Verify your email</h1>
     </header>
+
     <main class="page-main">
-      <main class="page-main">
-        <div id="token-found">
-          <p>We’re opening TeamPickr to complete your verification...</p>
-          <p><a id="open-app-link" href="#">Open TeamPickr</a>.</p>
-        </div>
-  
-        <div id="token-not-found">
+      <div class="stack">
+        <section id="loading-state">
+          <p>Checking your verification link…</p>
+        </section>
+
+        <section id="token-found" hidden>
+          <p>We’re opening TeamPickr to complete your verification…</p>
+          <p>
+            <a
+              id="open-app-link"
+              class="action-link"
+              href="teampickr://"
+            >
+              Open TeamPickr
+            </a>.
+          </p>
+          <p class="helper-text">
+            If the app does not open automatically, use the link above.
+          </p>
+        </section>
+
+        <section id="token-not-found" hidden>
           <p>Invalid link. Missing verification token.</p>
-          <p><a href="teampickr://">Open TeamPickr</a>.</p>
-        </div>
-  
+          <p>
+            <a
+              class="action-link"
+              href="teampickr://"
+            >
+              Open TeamPickr
+            </a>.
+          </p>
+        </section>
+
         <noscript>
           <p>JavaScript is required to continue. Please return to the TeamPickr app.</p>
         </noscript>
-      </main>
+      </div>
     </main>
   </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
+    (function () {
+      const loadingState = document.getElementById('loading-state');
+      const tokenFoundState = document.getElementById('token-found');
+      const tokenNotFoundState = document.getElementById('token-not-found');
+      const openAppLink = document.getElementById('open-app-link');
 
-    const tokenFoundEl = document.getElementById('token-found');
-    const tokenNotFoundEl = document.getElementById('token-not-found');
-    const openAppLinkEl = document.getElementById('open-app-link');
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
 
-    if (!token) {
-      tokenNotFoundEl.style.display = 'block';
-    } else {
-      const deepLink = `teampickr://verify-email?token=${encodeURIComponent(token)}`;
+      function showMissingTokenState() {
+        loadingState.hidden = true;
+        tokenNotFoundState.hidden = false;
+      }
 
-      openAppLinkEl.href = deepLink;
-      tokenFoundEl.style.display = 'block';
+      function showRedirectState(appUrl) {
+        openAppLink.href = appUrl;
+        loadingState.hidden = true;
+        tokenFoundState.hidden = false;
 
-      setTimeout(() => {
+        window.setTimeout(function () {
+          window.location.href = appUrl;
+        }, 300);
+      }
+
+      if (!token) {
+        showMissingTokenState();
+        return;
+      }
+
+      const deepLink =
+        'teampickr://verify-email?token=' + encodeURIComponent(token);
+
+      showRedirectState(deepLink);
+
+      window.setTimeout(function () {
         window.location.href = deepLink;
-      }, 500);
-    }
+      }, 1200);
+    })();
   </script>
 </body>
 </html>
