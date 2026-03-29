@@ -3,23 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta
-    name="description"
-    content="TeamPickr email change confirmation"
-  >
+  <meta name="description" content="TeamPickr email change confirmation">
   <title>TeamPickr - Confirm your new email</title>
   <link rel="stylesheet" href="../theme.css">
+
+  <style>
+    [hidden] {
+      display: none !important;
+    }
+
+    .action-link {
+      display: inline-block;
+    }
+
+    .helper-text {
+      opacity: 0.85;
+    }
+  </style>
 </head>
 <body>
   <div class="page-shell">
     <header class="page-header">
-      <h1 class="page-title">Confirm your new email</h1>
+      <h1 class="page-title">Confirm your new email address</h1>
     </header>
+
     <main class="page-main">
       <div class="stack">
         <section id="loading-state">
           <p>Checking your email change link…</p>
         </section>
+
         <section id="token-found" hidden>
           <p>We're opening TeamPickr to complete your email change…</p>
           <p>
@@ -35,6 +48,7 @@
             You'll be asked to enter your current password in the app to finish the change.
           </p>
         </section>
+
         <section id="token-not-found" hidden>
           <p>This link is invalid or incomplete because the email change token is missing.</p>
           <p>
@@ -51,64 +65,45 @@
   </div>
 
   <script>
-    // Wraps everything in an immediately invoked function to avoid leaking variables globally.
     (function () {
-      // Gets references to the UI sections.
       const loadingState = document.getElementById('loading-state');
       const tokenFoundState = document.getElementById('token-found');
       const tokenNotFoundState = document.getElementById('token-not-found');
       const returnToAppLink = document.getElementById('return-to-app-link');
 
-      // Reads the current page URL query string.
       const params = new URLSearchParams(window.location.search);
-
-      // Gets the email change token from the URL.
       const token = params.get('token');
 
-      // Defines the fallback deep link if no token is available.
-      const fallbackAppUrl = 'teampickr://settings/account';
-
-      // Shows the invalid-link state.
       function showMissingTokenState() {
-        // Hides the loading state.
         loadingState.hidden = true;
-
-        // Shows the missing token message.
         tokenNotFoundState.hidden = false;
       }
 
-      // Shows the redirect state and attempts to open the app.
       function showRedirectState(appUrl) {
-        // Updates the manual fallback link.
         returnToAppLink.href = appUrl;
-
-        // Hides the loading state.
         loadingState.hidden = true;
-
-        // Shows the redirect message.
         tokenFoundState.hidden = false;
 
-        // Attempts to open the app immediately.
-        window.location.href = appUrl;
+        // Give the browser a moment to render the message before opening the app.
+        window.setTimeout(function () {
+          window.location.href = appUrl;
+        }, 300);
       }
 
-      // If there is no token, show the error state.
       if (!token) {
         showMissingTokenState();
         return;
       }
 
-      // Builds the deep link back into the TeamPickr app.
       const appUrl =
         'teampickr://confirm-email-change?token=' + encodeURIComponent(token);
 
-      // Shows the redirect UI and opens the app.
       showRedirectState(appUrl);
 
-      // Provides a second redirect attempt after a brief delay for some mobile browsers.
+      // Optional second attempt for browsers that ignore the first deep link.
       window.setTimeout(function () {
         window.location.href = appUrl;
-      }, 800);
+      }, 1200);
     })();
   </script>
 </body>
