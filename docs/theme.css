@@ -130,6 +130,6 @@ a:hover {
 }
 
 /* Hide elements by default */
-#token-found, #token-not-found {
+#token-found, #token-not-found, [hidden] {
   display: none;
 }
