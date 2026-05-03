@@ -73,6 +73,7 @@ body {
   display: inline-block;
   padding: var(--space-md) var(--space-lg);
   border-radius: var(--radius-md);
+  border: none;
   background-color: var(--color-primary);
   color: var(--color-background);
   text-decoration: none;
