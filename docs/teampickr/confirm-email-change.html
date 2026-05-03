@@ -7,105 +7,115 @@
   <title>TeamPickr - Confirm your new email</title>
   <link rel="stylesheet" href="../theme.css">
   <link rel="icon" href="./assets/favicon.ico" type="image/x-icon">
-
-  <style>
-    [hidden] {
-      display: none !important;
-    }
-
-    .action-link {
-      display: inline-block;
-    }
-
-    .helper-text {
-      opacity: 0.85;
-    }
-  </style>
 </head>
 <body>
   <div class="page-shell">
-    <header class="page-header">
-      <h1 class="page-title">Confirm your new email address</h1>
-    </header>
-
     <main class="page-main">
-      <div class="stack">
-        <section id="loading-state">
-          <p>Checking your email change link…</p>
-        </section>
+      <header class="page-header">
+        <img src="./assets/logo.png" alt="TeamPickr Logo" width="160">
+        <h1 class="page-subtitle">Confirm your new email address</h1>
+      </header>
+      <noscript>
+        <style>#auth-flow { display: none !important; }</style>
+        <p>JavaScript is required to confirm your email change on this page.</p>
+        <p><a href="./support.html">Support</a></p>
+      </noscript>
+      <div id="auth-flow">
+      <section id="form-state">
+        <p>
+          Enter your <strong>current</strong> account password to confirm this email change.
+        </p>
 
-        <section id="token-found" hidden>
-          <p>We're opening TeamPickr to complete your email change…</p>
-          <p>
-            <a
-              id="return-to-app-link"
-              class="action-link"
-              href="teampickr://settings/account"
+        <form id="confirm-form" novalidate>
+          <div class="form-row">
+            <label for="current-password">Current password</label>
+            <input
+              id="current-password"
+              name="current-password"
+              type="password"
+              autocomplete="current-password"
+              required
             >
-              If nothing happens, tap here to return to the app
-            </a>.
-          </p>
-          <p class="helper-text">
-            You'll be asked to enter your current password in the app to finish the change.
-          </p>
-        </section>
+          </div>
+          <p id="form-error" class="message-error" hidden role="alert"></p>
+          <button type="submit" class="button" id="submit-btn">Confirm new email</button>
+        </form>
+      </section>
 
-        <section id="token-not-found" hidden>
-          <p>This link is invalid or incomplete because the email change token is missing.</p>
-          <p>
-            <a
-              class="action-link"
-              href="teampickr://settings/account"
-            >
-              Return to TeamPickr
-            </a>
-          </p>
-        </section>
+      <section id="success-state" hidden>
+        <p>Your email address has been updated.</p>
+        <p>
+          <a href="teampickr://settings/account">Open TeamPickr</a>
+          <span class="helper-text"> on this device if you have the app installed.</span>
+        </p>
+      </section>
+
+      <section id="token-not-found" hidden>
+        <p>This page needs the link from your “confirm new email” message. Open that email and tap the button again, or start a new email change in the app.</p>
+        <p>
+          <a href="teampickr://settings/account">Open TeamPickr</a>
+          or <a href="./support.html">contact support</a>.
+        </p>
+      </section>
       </div>
     </main>
   </div>
 
-  <script>
-    (function () {
-      const loadingState = document.getElementById('loading-state');
-      const tokenFoundState = document.getElementById('token-found');
-      const tokenNotFoundState = document.getElementById('token-not-found');
-      const returnToAppLink = document.getElementById('return-to-app-link');
+  <script type="module">
+    import {
+      createClient,
+      getTokenFromUrl,
+      formatAuthError,
+      AUTH_COLLECTION,
+    } from './auth-bridge.js';
 
-      const params = new URLSearchParams(window.location.search);
-      const token = params.get('token');
+    const formState = document.getElementById('form-state');
+    const successState = document.getElementById('success-state');
+    const tokenNotFound = document.getElementById('token-not-found');
+    const form = document.getElementById('confirm-form');
+    const formError = document.getElementById('form-error');
+    const submitBtn = document.getElementById('submit-btn');
+    const submitLabelDefault = submitBtn.textContent.trim();
 
-      function showMissingTokenState() {
-        loadingState.hidden = true;
-        tokenNotFoundState.hidden = false;
-      }
+    const token = getTokenFromUrl();
+    if (!token) {
+      formState.hidden = true;
+      tokenNotFound.hidden = false;
+    } else {
+      const pb = createClient();
 
-      function showRedirectState(appUrl) {
-        returnToAppLink.href = appUrl;
-        loadingState.hidden = true;
-        tokenFoundState.hidden = false;
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        formError.hidden = true;
 
-        // Give the browser a moment to render the message before opening the app.
-        window.setTimeout(function () {
-          window.location.href = appUrl;
-        }, 300);
-      }
+        const password = document.getElementById('current-password').value;
+        if (!password) {
+          formError.textContent = 'Enter the password you currently use to sign in to TeamPickr.';
+          formError.hidden = false;
+          return;
+        }
 
-      if (!token) {
-        showMissingTokenState();
-        return;
-      }
-
-      const appUrl =
-        'teampickr://confirm-email-change?token=' + encodeURIComponent(token);
-
-      showRedirectState(appUrl);
-
-      // Optional second attempt for browsers that ignore the first deep link.
-      window.setTimeout(function () {
-        window.location.href = appUrl;
-      }, 1200);
-    })();
+        submitBtn.disabled = true;
+        submitBtn.classList.add('is-loading');
+        form.setAttribute('aria-busy', 'true');
+        submitBtn.textContent = 'Confirming…';
+        try {
+          await pb.collection(AUTH_COLLECTION).confirmEmailChange(token, password);
+          submitBtn.classList.remove('is-loading');
+          form.removeAttribute('aria-busy');
+          submitBtn.textContent = submitLabelDefault;
+          formState.hidden = true;
+          successState.hidden = false;
+        } catch (err) {
+          formError.textContent = formatAuthError(err);
+          formError.hidden = false;
+          submitBtn.disabled = false;
+          submitBtn.classList.remove('is-loading');
+          form.removeAttribute('aria-busy');
+          submitBtn.textContent = submitLabelDefault;
+        }
+      });
+    }
   </script>
 </body>
 </html>
