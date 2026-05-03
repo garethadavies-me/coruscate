@@ -16,8 +16,8 @@
 
 import PocketBase from 'https://esm.sh/pocketbase@0.25.1';
 
-// export const POCKETBASE_URL = 'https://teampickr-api.coruscatestudio.com';
-export const POCKETBASE_URL = 'http://127.0.0.1:8090';
+export const POCKETBASE_URL = 'https://teampickr-api.coruscatestudio.com';
+// export const POCKETBASE_URL = 'http://127.0.0.1:8090';
 
 /** Auth collection id in PocketBase (change if yours is not `users`). */
 export const AUTH_COLLECTION = 'users';
