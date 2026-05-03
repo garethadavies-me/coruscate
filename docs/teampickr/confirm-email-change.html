@@ -92,9 +92,9 @@
       </section>
 
       <section id="token-not-found" hidden>
-        <p>This link is invalid or incomplete because the email change token is missing.</p>
+        <p>This page needs the link from your “confirm new email” message. Open that email and tap the button again, or start a new email change in the app.</p>
         <p>
-          <a href="teampickr://settings/account">Return to TeamPickr</a>
+          <a href="teampickr://settings/account">Open TeamPickr</a>
           or <a href="./support.html">contact support</a>.
         </p>
       </section>
@@ -130,7 +130,7 @@
 
         const password = document.getElementById('current-password').value;
         if (!password) {
-          formError.textContent = 'Please enter your current password.';
+          formError.textContent = 'Enter the password you currently use to sign in to TeamPickr.';
           formError.hidden = false;
           return;
         }
