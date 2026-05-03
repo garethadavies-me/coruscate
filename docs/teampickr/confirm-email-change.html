@@ -74,6 +74,7 @@
     const form = document.getElementById('confirm-form');
     const formError = document.getElementById('form-error');
     const submitBtn = document.getElementById('submit-btn');
+    const submitLabelDefault = submitBtn.textContent.trim();
 
     const token = getTokenFromUrl();
     if (!token) {
@@ -94,14 +95,23 @@
         }
 
         submitBtn.disabled = true;
+        submitBtn.classList.add('is-loading');
+        form.setAttribute('aria-busy', 'true');
+        submitBtn.textContent = 'Confirming…';
         try {
           await pb.collection(AUTH_COLLECTION).confirmEmailChange(token, password);
+          submitBtn.classList.remove('is-loading');
+          form.removeAttribute('aria-busy');
+          submitBtn.textContent = submitLabelDefault;
           formState.hidden = true;
           successState.hidden = false;
         } catch (err) {
           formError.textContent = formatAuthError(err);
           formError.hidden = false;
           submitBtn.disabled = false;
+          submitBtn.classList.remove('is-loading');
+          form.removeAttribute('aria-busy');
+          submitBtn.textContent = submitLabelDefault;
         }
       });
     }

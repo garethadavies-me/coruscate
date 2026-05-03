@@ -22,8 +22,19 @@
         </div>
       </noscript>
       <div id="auth-flow" class="stack">
-        <section id="loading-state">
-          <p>Verifying your email…</p>
+        <section
+          id="loading-state"
+          aria-busy="true"
+          aria-live="polite"
+          role="status"
+        >
+          <div class="loading-row">
+            <span class="loading-spinner" aria-hidden="true"></span>
+            <div class="loading-row__text">
+              <p>Verifying your email…</p>
+              <p class="loading-subline">This usually takes a few seconds.</p>
+            </div>
+          </div>
         </section>
 
         <section id="success-state" hidden>
@@ -69,6 +80,7 @@
 
     function show(el) {
       loadingState.hidden = true;
+      loadingState.setAttribute('aria-busy', 'false');
       successState.hidden = true;
       errorState.hidden = true;
       tokenNotFound.hidden = true;
