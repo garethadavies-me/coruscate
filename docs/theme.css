@@ -130,6 +130,56 @@ a:hover {
   text-decoration: underline;
 }
 
+/* Primary content column — readable width for marketing and auth pages */
+.page-main {
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.action-link {
+  display: inline-block;
+}
+
+.helper-text {
+  opacity: 0.85;
+}
+
+.message-error {
+  color: var(--color-error);
+}
+
+/* Forms — TeamPickr auth bridge (confirm-password-reset.html) */
+.form-row {
+  margin-bottom: var(--space-lg);
+}
+
+.form-row label {
+  display: block;
+  margin-bottom: var(--space-xs);
+  font-weight: var(--font-label-weight);
+}
+
+.form-row input {
+  width: 100%;
+  max-width: 24rem;
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  border: none;
+  background: white;
+  color: var(--color-background);
+  font-size: var(--font-body-size);
+}
+
+button.button {
+  font: inherit;
+}
+
 /* Hide elements by default */
 [hidden] {
   display: none !important;
